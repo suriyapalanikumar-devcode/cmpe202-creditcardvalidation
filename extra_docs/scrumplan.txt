@@ -1,0 +1,22 @@
+Front end:
+
+1) Design a login Screen - Rohit(12th April)
+
+If Admin, Design:
+APIS - DONE
+Show options for 
+Adding new accounts - By default 
+Closing accounts 
+Manual Refund on Fees 
+
+If Customer, Design:
+
+Saurabh - Design
+1) Show options for 
+Transferring between accounts - API Done
+Setting up recurring bill payment - Sajal
+view transactions(Credit, debit) with time durations for 18 months 
+2) design pages for the same
+
+
+Backend APIS:
