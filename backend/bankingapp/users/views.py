@@ -10,7 +10,7 @@ from .serializers import (
 )
 
 from .models import User
-
+from django.views.decorators.csrf import csrf_exempt
 
 class UserRegistrationView(APIView):
     serializer_class = UserRegistrationSerializer
@@ -37,6 +37,7 @@ class UserLoginView(APIView):
     serializer_class = UserLoginSerializer
     permission_classes = (AllowAny, )
 
+    @csrf_exempt
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
