@@ -6,21 +6,29 @@ from rest_framework.authtoken.models import Token
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only=True,
+        allow_null=True,
+        required=False,
+        style={'input_type': 'password', 'placeholder': 'Password'}
+    )
+    email = serializers.EmailField(required=False, allow_null=True)
+    first_name = serializers.CharField(required=False, allow_null=True)
+    last_name = serializers.CharField(required=False, allow_null=True)
+    ssn = serializers.CharField(required=False, allow_null=True)
+    mobile = serializers.CharField(required=False, allow_null=True)
+
     class Meta:
         model = User
         fields = (
+            'id',
             'email',
             'password',
             'first_name',
             'last_name',
             'role',
             'ssn',
-            'mobile',
-            'date_joined',
-            'is_active',
-            'is_active',
-            'created_date',
-            'modified_date'
+            'mobile'
         )
 
     def create(self, validated_data):
