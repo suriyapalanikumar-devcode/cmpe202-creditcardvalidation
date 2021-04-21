@@ -1,16 +1,31 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from django.views import View
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-
+from django.contrib.auth import logout
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
     UserListSerializer
 )
-
 from .models import User
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import logout
+
+
+class UserLogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self,request):
+        logout(request)
+        status_code = status.HTTP_200_OK
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully Logged out',
+        }
+        return Response(response, status=status_code)
 
 class UserRegistrationView(APIView):
     serializer_class = UserRegistrationSerializer
@@ -83,3 +98,5 @@ class UserListView(APIView):
 
             }
             return Response(response, status=status.HTTP_200_OK)
+
+
