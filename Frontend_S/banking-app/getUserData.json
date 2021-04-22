@@ -1,0 +1,29 @@
+{
+  "userData": [
+    {
+      "id": 1,
+      "useId": "svk",
+      "accountnumber": "12345"
+    },
+    {
+      "id": 2,
+      "useId": "scg",
+      "accountnumber": "6789"
+    },
+    {
+      "id": 3,
+      "useId": "vsl",
+      "accountnumber": "55555"
+    },
+    {
+      "id": 4,
+      "useId": "pmp",
+      "accountnumber": "88666"
+    },
+    {
+      "id": 5,
+      "useId": "rrm",
+      "accountnumber": "143"
+    }
+  ]
+}
