@@ -48,3 +48,8 @@ class AccountViewSet(viewsets.ModelViewSet):
                 'account': AccountSerializer(account).data
         }
         return Response(response)
+
+    @action(methods=['get'], detail=False, url_path='get', url_name='get', permission_classes=[IsAuthenticated])
+    def get_accounts(self, request):
+        payees = Account.objects.filter(user=self.request.user)
+        return Response(AccountSerializer(payees, many=True).data)
