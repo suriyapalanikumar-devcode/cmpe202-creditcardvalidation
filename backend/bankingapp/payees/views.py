@@ -12,9 +12,9 @@ from rest_framework.fields import CurrentUserDefault
 
 
 class PayeeViewSet(viewsets.ModelViewSet):
-    queryset = Payee.objects.filter(id=0).order_by('id')
+    queryset = Payee.objects.filter().order_by('id')
     serializer_class = PayeeSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAdminUser)
 
     @action(methods=['post'], detail=False, url_path='add', url_name='add', permission_classes=[IsAuthenticated])
     def add(self, request):
@@ -31,3 +31,13 @@ class PayeeViewSet(viewsets.ModelViewSet):
     def get_payees(self, request):
         payees = Payee.objects.filter(user=self.request.user)
         return Response(PayeeSerializer(payees, many=True).data)
+
+    @action(methods=['post'], detail=True,
+            url_path='delete', url_name='delete', permission_classes=[IsAuthenticated])
+    def delete_payee(self, request, pk):
+        payee = self.get_object()
+        if payee.user.id == self.request.user.id:
+            payee.delete()
+        else:
+            return Response({'status': 'Not allowed'})
+        return Response({'status': 'payee deleted'})

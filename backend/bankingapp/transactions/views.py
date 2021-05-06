@@ -16,9 +16,9 @@ from users.models import User
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
-    queryset = Transaction.objects.filter(id=0).order_by('id')
+    queryset = Transaction.objects.filter().order_by('id')
     serializer_class = TransactionSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAdminUser)
 
     @action(methods=['post'], detail=False,
             url_path='transfer', url_name='transfer')
@@ -46,7 +46,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return Response({'status': 'Success', 'message': 'Money transferred!',
                          'transactionDetails': TransactionSerializer(debit_entry).data})
 
-    @action(methods=['post'], detail=False, url_path='search', url_name='search')
+    @action(methods=['post'], detail=False, url_path='search', url_name='search', permission_classes=[IsAuthenticated])
     def search(self, request):
         filters = {}
         account_no = request.data['accountNumber']

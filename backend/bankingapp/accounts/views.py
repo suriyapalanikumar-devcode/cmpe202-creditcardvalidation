@@ -12,7 +12,7 @@ from users.serializers import UserRegistrationSerializer
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.filter(isActive='Y').order_by('accountNumber')
     serializer_class = AccountSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAdminUser)
 
     @action(methods=['post'], detail=True,
             url_path='closeAccount', url_name='closeAccount', permission_classes=[IsAdminUser])
