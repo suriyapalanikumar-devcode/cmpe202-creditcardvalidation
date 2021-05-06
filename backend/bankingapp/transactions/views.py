@@ -70,9 +70,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post'], detail=False, url_path='add', url_name='add', permission_classes=[IsAdminUser])
     def add(self, request):
-        account = Account.objects.filter(accountNumber=request.data['account']).first()
+        account = Account.objects.filter(accountNumber=request.data.pop('account')).first()
         transaction = Transaction.objects.create(account=account, txnRefNo=get_next_value("txnRefNo"),
-                                                 createdBy=User.objects.get(id=1), **request.data)
+                                                 createdBy=self.request.user, **request.data)
         txn_type = transaction.txnType
         if Transaction.TxnTypes.DEBIT == txn_type or Transaction.TxnTypes.FEES == txn_type:
             account.balance -= Decimal(transaction.amount)

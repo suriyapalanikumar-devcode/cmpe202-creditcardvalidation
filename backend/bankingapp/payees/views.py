@@ -18,8 +18,7 @@ class PayeeViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post'], detail=False, url_path='add', url_name='add', permission_classes=[IsAuthenticated])
     def add(self, request):
-        account = Account.objects.filter(accountNumber=request.data['account']).first()
-
+        account = Account.objects.filter(accountNumber=request.data.pop('account')).first()
         payee = Payee.objects.create(user=self.request.user, account=account, **request.data)
         payee.save()
         response = {
