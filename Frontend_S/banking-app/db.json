@@ -1,0 +1,116 @@
+{
+  "posts": [
+    {
+      "accountType": "checking",
+      "user": {
+        "email": "sikrewalrohitmog@gmail.com",
+        "firstName": "Rohit",
+        "lastName": "Sikrewal",
+        "mobile": "4085496361",
+        "password": "hfsihdiuf",
+        "re_password": "fkjhkdjfs",
+        "ssn": "345 3456 3456 9876"
+      },
+      "balance": "5000",
+      "id": 2
+    },
+    {
+      "accountType": "savings",
+      "user": {
+        "email": "sikrewalrohitmog@gmail.com",
+        "firstName": "Rohit",
+        "lastName": "Sikrewal",
+        "mobile": "4085496361",
+        "password": "vkdjjds",
+        "rePassword": "vnmsd",
+        "ssn": "3546 4789 9876"
+      },
+      "balance": "dvnsdkl",
+      "id": 3
+    },
+    {
+      "accountType": "checking",
+      "user": {
+        "email": "sikrewalrohit96@gmail.com",
+        "firstName": "Aakanshya",
+        "lastName": "Sorcar",
+        "mobile": "765987636",
+        "password": "bhjcvb",
+        "rePassword": "cjksd",
+        "ssn": "653 234 435 345"
+      },
+      "balance": "8000",
+      "id": 4
+    },
+    {
+      "accountType": "savings",
+      "user": {
+        "email": "",
+        "firstName": "",
+        "lastName": "",
+        "mobile": "",
+        "password": "",
+        "rePassword": "",
+        "ssn": ""
+      },
+      "balance": "",
+      "id": 5
+    },
+    {
+      "accountType": "savings",
+      "user": {
+        "email": "svkannawar5@gmail.com",
+        "firstName": "Saurabh",
+        "lastName": "Kannawar",
+        "mobile": "4085496734",
+        "password": "ssssssss",
+        "rePassword": "ssssssss",
+        "ssn": "45f"
+      },
+      "balance": "45",
+      "id": 6
+    },
+    {
+      "accountType": "savings",
+      "user": {
+        "email": "",
+        "firstName": "",
+        "lastName": "",
+        "mobile": "",
+        "password": "",
+        "rePassword": "",
+        "ssn": ""
+      },
+      "balance": "",
+      "id": 7
+    },
+    {
+      "accountType": "savings",
+      "user": {
+        "email": "",
+        "firstName": "svk",
+        "lastName": "",
+        "mobile": "",
+        "password": "",
+        "rePassword": "",
+        "ssn": ""
+      },
+      "balance": "",
+      "id": 8
+    },
+    {
+      "accountType": "savings",
+      "user": {
+        "email": "",
+        "firstName": "",
+        "lastName": "",
+        "mobile": "",
+        "password": "",
+        "rePassword": "",
+        "ssn": ""
+      },
+      "balance": "",
+      "id": 9
+    }
+  ]
+}

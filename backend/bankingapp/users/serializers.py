@@ -17,6 +17,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=False, allow_null=True)
     ssn = serializers.CharField(required=False, allow_null=True)
     mobile = serializers.CharField(required=False, allow_null=True)
+    
 
     class Meta:
         model = User
@@ -28,11 +29,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'last_name',
             'role',
             'ssn',
-            'mobile'
+            'mobile',
+            'is_admin',
+            'is_staff',
+            'is_superuser'
         )
 
     def create(self, validated_data):
-        print(validated_data)
+        #print(validated_data)
         auth_user = User.objects.create_user(**validated_data)
         print(auth_user)
         return auth_user
