@@ -21,7 +21,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminUser)
 
     @action(methods=['post'], detail=False,
-            url_path='transfer', url_name='transfer')
+            url_path='transfer', url_name='transfer', permission_classes=[IsAuthenticated])
     def transfer(self, request):
         from_account = Account.objects.filter(accountNumber=request.data['fromAccount']).first()
         to_account = Account.objects.filter(accountNumber=request.data['toAccount']).first()
