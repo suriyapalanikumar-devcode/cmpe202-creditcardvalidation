@@ -1,11 +1,32 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import {Segment} from 'semantic-ui-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+// import React, { useEffect } from "react";
 
 const ClosingAccount = ({ onClosingAccount }) => {
 
     const [acc_id, setAccId] = useState('')
+
+    useEffect(()=>{
+        const email_temp = [];
+        const token = localStorage.getItem("token")
+        fetch ('http://localhost:8000/accounts/accounts/accid_fetch',
+            {
+              method: "get",
+              headers: {
+                'Authorization': `token ${token}`
+              },
+              
+            })
+        .then(res => {
+            console.log(res)
+        })                   
+        .catch(err => {
+        console.log(err)        
+        });
+    },[]);
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -34,7 +55,7 @@ const ClosingAccount = ({ onClosingAccount }) => {
 
     }
 
-    return (
+    return (    
         <div>
             <Navbar />
             <Segment className="container">

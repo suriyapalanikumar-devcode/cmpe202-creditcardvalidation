@@ -88,8 +88,9 @@ class UserListView(APIView):
             }
             return Response(response, status.HTTP_403_FORBIDDEN)
         else:
-            users = User.objects.all()
+            users = User.objects.filter(role="CUSTOMER")
             serializer = self.serializer_class(users, many=True)
+            #print(serializer.data)
             response = {
                 'success': True,
                 'status_code': status.HTTP_200_OK,

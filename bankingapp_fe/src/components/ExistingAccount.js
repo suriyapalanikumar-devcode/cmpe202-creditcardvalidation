@@ -53,8 +53,6 @@ const ExistingAccount = ({ onAdd }) => {
                            
                     <form className='new-acc' onSubmit={onSubmit}>
 
-                        
-
                         <div className='form-control'>
                             <label>Email</label>
                             <input

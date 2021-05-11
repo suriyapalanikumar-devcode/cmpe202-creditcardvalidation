@@ -1,16 +1,51 @@
 //Add a account for existing user
 
-import React from "react";
+import React, { useEffect } from "react";
 import {Segment} from 'semantic-ui-react';
 import { useState } from 'react';
+import { Select } from 'antd';
+import axios from 'axios';
 
-
+const { Option } = Select;
 
 const NewAccount = ({ onAdd }) => {
+
+
     
     const [email, setEmail] = useState('')
     const [balance, setInitialBalance] = useState('')
     const [dropdown, setDropdown] = useState("savings")
+    const [uniqueUsers, setUniqueUsers] = useState([]);
+
+
+    useEffect(()=>{
+        const email_temp = [];
+        const token = localStorage.getItem("token")
+        axios.get(`http://localhost:8000/users/users`, {headers:{'Authorization': `token ${token}`}})
+        .then(res => {
+            res.data.users.forEach(element => {
+            email_temp.push(element["email"])
+            });  
+            setUniqueUsers(email_temp);
+        })
+        .catch(err => {
+        console.log(err)        
+        });
+    },[]);
+
+    const onChange_ddown = (value) => {
+        console.log(`selected ${value}`);
+      }
+      
+    const onBlur = (value) => {
+        console.log('blur');
+      }
+      
+    const onFocus = (value) => {
+        console.log('focus');
+      }
+      
+
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -53,8 +88,24 @@ const NewAccount = ({ onAdd }) => {
                 <semantic_header><div className="form-head"><h1>Add New Account</h1></div></semantic_header>
                            
                     <form className='new-acc' onSubmit={onSubmit}>
+                    <label>Email</label>
+                    <br/>
+                        <Select
+                            showSearch
+                            style={{ width: 550 }}
+                            placeholder="Enter customer's Email"
+                            optionFilterProp="children"
+                            onChange={onChange_ddown}
+                        >
+                            {/* <Option value="jack">Jack</Option>
+                            <Option value="lucy">Lucy</Option>
+                            <Option value="tom">Tom</Option> */}
+                        {uniqueUsers.map((option) => (
+                               <Option value={option} key={option}>{option}</Option>
+                        ))}
+                        </Select>
 
-                        <div className='form-control'>
+                        {/* <div className='form-control'>
                             <label>Email</label>
                             <input
                             type="email"
@@ -62,7 +113,7 @@ const NewAccount = ({ onAdd }) => {
                             value = {email}
                             onChange={(e) => setEmail(e.target.value)}
                             />
-                        </div>
+                        </div> */}
 
                         <div className='form-control'>
                             <label>Initial Balance</label>

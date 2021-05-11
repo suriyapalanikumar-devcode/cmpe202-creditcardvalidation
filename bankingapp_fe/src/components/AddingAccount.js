@@ -5,13 +5,17 @@ import NewAccount from './NewAccount'
 import ExistingUserAccount from './ExistingUserAccount'
 import Navbar from './Navbar'
 import Button from './Button'
-
+import axios from 'axios';
 
 function AddingAccount() {
 
   const [newCust, setNewCust] = useState(true)
+  const [uniqueusers, setUniqueUsers] = useState([])
   const fun = ()=>
+  {
+    const email = [];
     setNewCust(!newCust)
+  }
 
   return (
     <div>

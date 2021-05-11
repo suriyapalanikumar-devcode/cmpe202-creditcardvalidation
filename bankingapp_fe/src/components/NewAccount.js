@@ -54,7 +54,7 @@ const NewAccount = ({ onAdd }) => {
             alert("please enter Password")
         }
         else if(!re_password) {
-            alert("please re-enter your Password")
+            alert("please re-enter  Password")
         }
         else if(password !== re_password) {
             alert("Passwords does not match")
@@ -145,7 +145,7 @@ const NewAccount = ({ onAdd }) => {
                             <label>SSN</label>
                             <input
                             type="text"
-                            placeholder='Enter Your SSN'
+                            placeholder='Enter SSN'
                             value = {ssn}
                             onChange={(e) => setSsn(e.target.value)}
                             />
@@ -155,7 +155,7 @@ const NewAccount = ({ onAdd }) => {
                             <label>Mobile Number</label>
                             <input
                             type="text"
-                            placeholder='EnterYour Mobile Number'
+                            placeholder='Enter Mobile Number'
                             value = {phone}
                             onChange={(e) => setPhone(e.target.value)}
                             />
@@ -165,7 +165,7 @@ const NewAccount = ({ onAdd }) => {
                             <label>Email</label>
                             <input
                             type="email"
-                            placeholder='Enter Your Email'
+                            placeholder='Enter  Email'
                             value = {email}
                             onChange={(e) => setEmail(e.target.value)}
                             />
@@ -175,7 +175,7 @@ const NewAccount = ({ onAdd }) => {
                             <label>Password</label>
                             <input
                             type="password"
-                            placeholder='Enter Your Password'
+                            placeholder='Enter  Password'
                             value = {password}
                             onChange={(e) => setPassword(e.target.value)}
                             />
@@ -185,7 +185,7 @@ const NewAccount = ({ onAdd }) => {
                             <label>Re-Enter Password</label>
                             <input
                             type="password"
-                            placeholder='Re-Enter Your Password'
+                            placeholder='Re-Enter  Password'
                             value = {re_password}
                             onChange={(e) => setRePassword(e.target.value)}
                             />
