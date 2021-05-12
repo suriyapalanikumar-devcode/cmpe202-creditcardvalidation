@@ -14,6 +14,15 @@ class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSerializer
     permission_classes = (IsAuthenticated, IsAdminUser)
 
+
+    @action(methods=['post'], detail=False, url_path='accid', url_name='accid', permission_classes=[IsAdminUser])
+    def accid(self, request):
+        email  =[]
+        payees = Account.objects.filter(isActive='Y')
+        for i in AccountSerializer(payees, many=True).data:
+            email.append(i["accountNumber"])
+        return Response(email)
+
     @action(methods=['post'], detail=True,
             url_path='closeAccount', url_name='closeAccount', permission_classes=[IsAdminUser])
     def close_account(self, request, pk):
@@ -28,10 +37,15 @@ class AccountViewSet(viewsets.ModelViewSet):
         user_json = request.data.pop('user')
         customer = None
         existing_user_id = 0
-        if "id" in user_json:
-            existing_user_id = user_json.pop('id')
-        if existing_user_id != 0:
-            customer = User.objects.get(id=existing_user_id)
+        # if "id" in user_json:
+        #     existing_user_id = user_json.pop('id')
+        # if existing_user_id != 0:
+        #     customer = User.objects.get(id=existing_user_id)
+
+        if (not user_json["firstName"] and not user_json["lastName"]
+                and not user_json["password"] and not user_json["ssn"]
+                and not user_json["mobile"] and user_json["email"]):
+                customer = User.objects.get(email=user_json["email"])
         else:
             if "id" in user_json:
                 del user_json['id']
@@ -49,12 +63,10 @@ class AccountViewSet(viewsets.ModelViewSet):
         }
         return Response(response)
 
+
     @action(methods=['get'], detail=False, url_path='get', url_name='get', permission_classes=[IsAuthenticated])
     def get_accounts(self, request):
         payees = Account.objects.filter(user=self.request.user)
         return Response(AccountSerializer(payees, many=True).data)
 
-    @action(methods=['get'], detail=True,url_path='accidfetch', url_name='accidfetch', permission_classes=[IsAdminUser])
-    def account_idfetch(self, request):
-        payees = Account.objects.all()
-        return Response(AccountSerializer(payees, many=True).data)
+
