@@ -1,6 +1,6 @@
 from .models import User
 from rest_framework import serializers
-#from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 
@@ -12,7 +12,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         required=False,
         style={'input_type': 'password', 'placeholder': 'Password'}
     )
-    email = serializers.EmailField(required=False, allow_null=True)
+    email = serializers.EmailField(required=False, allow_null=True,
+                                   validators=[UniqueValidator(queryset=User.objects.all(),
+                                                               message='Email id should be unique!')])
     first_name = serializers.CharField(required=False, allow_null=True)
     last_name = serializers.CharField(required=False, allow_null=True)
     ssn = serializers.CharField(required=False, allow_null=True)

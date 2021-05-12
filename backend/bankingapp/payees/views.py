@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import PayeeSerializer
 from .models import Payee
 from accounts.models import Account
-from rest_framework.fields import CurrentUserDefault
+from datetime import datetime
 
 
 class PayeeViewSet(viewsets.ModelViewSet):
@@ -19,10 +19,21 @@ class PayeeViewSet(viewsets.ModelViewSet):
     @action(methods=['post'], detail=False, url_path='add', url_name='add', permission_classes=[IsAuthenticated])
     def add(self, request):
         account = Account.objects.filter(accountNumber=request.data.pop('account')).first()
-        payee = Payee.objects.create(user=self.request.user, account=account, **request.data)
+        if account.user.id != self.request.user.id:
+            return Response({'message': 'Not allowed'}, status=status.HTTP_403_FORBIDDEN)
+        if Payee.objects.filter(payeeName=request.data['payeeName'], user=self.request.user).count() > 0:
+            response = {
+                'message': "A payee with name '" + request.data['payeeName'] + "' already exists",
+                'status': 'Failure'
+            }
+            return Response(response)
+        nextDueDate = datetime.strptime(request.data.pop('nextDueDate'), '%Y-%m-%d')
+        payee = Payee.objects.create(user=self.request.user, account=account, nextDueDate=nextDueDate.date(),
+                                     **request.data)
         payee.save()
         response = {
             'message': 'Payee added successfully!',
+            'status': 'Success',
             'payee': PayeeSerializer(payee).data
         }
         return Response(response)
@@ -39,5 +50,5 @@ class PayeeViewSet(viewsets.ModelViewSet):
         if payee.user.id == self.request.user.id:
             payee.delete()
         else:
-            return Response({'status': 'Not allowed'})
-        return Response({'status': 'payee deleted'})
+            return Response({'status': 'Not allowed'}, status=status.HTTP_403_FORBIDDEN)
+        return Response({'status': 'Success', 'message': 'Payee deleted!'})

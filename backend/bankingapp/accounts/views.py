@@ -20,7 +20,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         account = self.get_object()
         account.isActive = 'N'
         account.save()
-        return Response({'status': 'account closed'})
+        return Response({'status': 'Success', 'message': 'Account closed!'})
 
     @action(methods=['post'], detail=False,
             url_path='openAccount', url_name='openAccount', permission_classes=[IsAdminUser])
@@ -36,15 +36,19 @@ class AccountViewSet(viewsets.ModelViewSet):
             if "id" in user_json:
                 del user_json['id']
             serializer = UserRegistrationSerializer(data=user_json)
-            valid = serializer.is_valid(raise_exception=True)
+            valid = serializer.is_valid(raise_exception=False)
             if valid:
                 customer = serializer.save()
             else:
-                return Response({'message': 'Something went wrong!'})
+                validation_msg = serializer.errors
+                if "email" in validation_msg:
+                    validation_msg = serializer.errors['email'][0]
+                return Response({'message': validation_msg, 'status': 'Failure'})
         account = Account.objects.create(user=customer, accountType=request.data.pop('accountType'),
                                          balance=request.data.pop('balance'), isActive='Y')
         response = {
                 'message': 'Account added successfully!',
+                'status': 'Success',
                 'account': AccountSerializer(account).data
         }
         return Response(response)
