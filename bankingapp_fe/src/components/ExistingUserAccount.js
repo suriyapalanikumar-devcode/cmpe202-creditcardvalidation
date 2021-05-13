@@ -5,6 +5,7 @@ import {Segment} from 'semantic-ui-react';
 import { useState } from 'react';
 import { Select } from 'antd';
 import axios from 'axios';
+import { Modal, Button } from 'antd';
 
 const { Option } = Select;
 
@@ -16,13 +17,22 @@ const NewAccount = ({ onAdd }) => {
     const [balance, setInitialBalance] = useState('')
     const [dropdown, setDropdown] = useState("savings")
     const [uniqueUsers, setUniqueUsers] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+    
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     useEffect(()=>{
         const email_temp = [];
         const token = localStorage.getItem("token")
         axios.get(`http://localhost:8000/users/users`, {headers:{'Authorization': `token ${token}`}})
         .then(res => {
+            console.log(res)
             res.data.users.forEach(element => {
             email_temp.push(element["email"])
             });  
@@ -34,7 +44,8 @@ const NewAccount = ({ onAdd }) => {
     },[]);
 
     const onChange_ddown = (value) => {
-        console.log(`selected ${value}`);
+        //console.log(`selected ${value}`);
+        setEmail(value)
       }
       
     const onBlur = (value) => {
@@ -59,18 +70,20 @@ const NewAccount = ({ onAdd }) => {
         }
         else {
             // sending form data for post request
-            const user = {email:email, firstName:"", lastName:"", mobile:"", password:"", ssn:""};
-            const json_args = { accountType:dropdown, user, balance:balance };
-
+            const user = {email:email, firstName:null, lastName:null, mobile:null, password:null, ssn:null};
+            const json_args = { accountType:dropdown, user:user, balance:balance };
+            const token = localStorage.getItem("token")
             // Making post request to new account openning api
-            const new_acc_res = fetch ('http://localhost:5000/posts',
-            {
-              method: "POST",
-              headers: {
-                'Content-type': 'application/json'
-              },
-              body: JSON.stringify(json_args)
+            axios.post(`http://localhost:8000/accounts/accounts/openAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
+            .then(res => {
+                setIsModalVisible(true);
             })
+            .catch(err => {
+                this.setState({
+                    "display":false
+                })
+                
+            });
 
             // setting form to empty state
             setEmail("")
@@ -142,6 +155,9 @@ const NewAccount = ({ onAdd }) => {
 
                     </form>
             </Segment>
+            <Modal title="Accounts added" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <p>Additional account created successfully!!</p>
+      </Modal>
                 
         </div>
     )

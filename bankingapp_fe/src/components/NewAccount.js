@@ -82,9 +82,7 @@ const NewAccount = ({ onAdd }) => {
                 setDropdown("savings")
             })
             .catch(err => {
-                this.setState({
-                    "display":false
-                })
+                console.log(err)
                 
             });
 

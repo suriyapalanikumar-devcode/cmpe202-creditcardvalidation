@@ -4,29 +4,78 @@ import {Segment} from 'semantic-ui-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 // import React, { useEffect } from "react";
+import { Select } from 'antd';
+import { Modal, Button } from 'antd';
+
+const { Option } = Select;
 
 const ClosingAccount = ({ onClosingAccount }) => {
 
     const [acc_id, setAccId] = useState('')
+    const [aid, setaid] = useState([])
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+    
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
-    useEffect(()=>{
-        const email_temp = [];
+    const del_user = () =>{
         const token = localStorage.getItem("token")
-        fetch ('http://localhost:8000/accounts/accounts/accid_fetch',
+        fetch ('http://localhost:8000/accounts/accounts/accid/',
             {
-              method: "get",
+              method: "post",
               headers: {
                 'Authorization': `token ${token}`
               },
               
             })
-        .then(res => {
-            console.log(res)
-        })                   
+        .then(res => res.json())
+        .then(data=>{
+            setaid(data)
+        }
+        )                   
         .catch(err => {
         console.log(err)        
         });
+    }
+
+    useEffect(()=>{
+        const email_temp = [];
+        const token = localStorage.getItem("token")
+        // fetch ('http://localhost:8000/accounts/accounts/accid/',
+        //     {
+        //       method: "post",
+        //       headers: {
+        //         'Authorization': `token ${token}`
+        //       },
+              
+        //     })
+        // .then(res => res.json())
+        // .then(data=>{
+        //     setaid(data)
+        // }
+        // )                   
+        // .catch(err => {
+        // console.log(err)        
+        // });
+        del_user()
+        
     },[]);
+
+    const onChange_ddown = (value) => {
+        setAccId(value)
+      }
+      
+    const onBlur = (value) => {
+        console.log('blur');
+      }
+      
+    const onFocus = (value) => {
+        console.log('focus');
+      }
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -38,19 +87,21 @@ const ClosingAccount = ({ onClosingAccount }) => {
         else {
             // sending form data for post request
             const json_args = { account:acc_id };
-
+            const token = localStorage.getItem("token")
+            axios.post(`http://localhost:8000/accounts/accounts/${acc_id}/closeAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
+            .then(res => {
+                setIsModalVisible(true);       
+                del_user()
+                setAccId("jack")
+            })
+            .catch(err => {
+                console.log("err")
+                
+            });
             // Making post request to closing account api
-            const close_acc_res = fetch ('http://localhost:5000/posts',
-            {
-              method: "POST",
-              headers: {
-                'Content-type': 'application/json'
-              },
-              body: JSON.stringify(json_args)
-            })                        
+                    
 
-            // setting form to empty
-            setAccId("")
+
         }
 
     }
@@ -65,19 +116,32 @@ const ClosingAccount = ({ onClosingAccount }) => {
                     <form className='closing-account' onSubmit={onSubmit}>
 
                         <div className='form-control'>
-                            <label>Account Id</label>
-                            <input
-                            type="text"
-                            placeholder='Enter Account Id'
-                            value = {acc_id}
-                            onChange={(e) => setAccId(e.target.value)}
-                            />
+                            <label>Account ID</label>
+                            <Select
+                            showSearch
+                            style={{ width: 550 }}
+                            placeholder="Enter Account ID to delete"
+                            optionFilterProp="children"
+                            onChange={onChange_ddown}
+                        >
+                            {/* <Option value="jack">Jack</Option>
+                            <Option value="lucy">Lucy</Option>
+                            <Option value="tom">Tom</Option> */}
+                        <Option value="jack" disabled>Enter AccountID to Delete</Option>
+                        {aid.map((option) => (
+                               <Option value={option} key={option}>{option}</Option>
+                        ))}
+                        </Select>
                         </div>
 
                         <input type='submit' value="Close Account" className='btn btn-block'/>
 
                     </form>
             </Segment>
+
+            <Modal title="Accounts closed" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <p>Account has been closed successfully!!</p>
+      </Modal>
                 
         </div>
     )

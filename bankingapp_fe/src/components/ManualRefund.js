@@ -1,13 +1,68 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import {Segment} from 'semantic-ui-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Modal, Button } from 'antd';
+import { Select } from 'antd';
+
+const { Option } = Select;
 
 const ManualRefund = ({ onManTransfer }) => {
 
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [acc_id, setAccId] = useState('')
     const [amt, setAmt] = useState('')
     const [dropdown, setDropdown] = useState('check')
+    const [aid, setaid] = useState([])
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+    
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const del_user = () =>{
+        const token = localStorage.getItem("token")
+        fetch ('http://localhost:8000/accounts/accounts/accid/',
+            {
+              method: "post",
+              headers: {
+                'Authorization': `token ${token}`
+              },
+              
+            })
+        .then(res => res.json())
+        .then(data=>{
+            setaid(data)
+        }
+        )                   
+        .catch(err => {
+        console.log(err)        
+        });
+    }
+
+    useEffect(()=>{
+        const email_temp = [];
+        const token = localStorage.getItem("token")
+        del_user()
+        
+    },[]);
+
+    
+    const onChange_ddown = (value) => {
+        setAccId(value)
+      }
+      
+    const onBlur = (value) => {
+        console.log('blur');
+      }
+      
+    const onFocus = (value) => {
+        console.log('focus');
+      }
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -17,20 +72,21 @@ const ManualRefund = ({ onManTransfer }) => {
             alert("please enter Account Id")
         }
         else if(!amt) {
-            alert("please enter a valid ammount")
+            alert("please enter a valid amount")
         }
         else {
             // sending form data for post request
-            const json_args = { txn_type:dropdown, amt:amt, account:acc_id };
-            
+            const json_args = { txnType:dropdown, txnDesc:"manual refund",amount:amt, account:acc_id };
+            const token = localStorage.getItem("token")
             // Making post request to manual transfer api
-            const man_trans_res = fetch ('http://localhost:5000/posts',
-            {
-              method: "POST",
-              headers: {
-                'Content-type': 'application/json'
-              },
-              body: JSON.stringify(json_args)
+            axios.post(`http://localhost:8000/transactions/transactions/add/`, json_args, {headers:{'Authorization': `token ${token}`}})
+            .then(res => {
+                setIsModalVisible(true);
+            })
+            .catch(err => {
+                this.setState({
+                    "display":false
+                })
             })
 
             // setting form to empty
@@ -52,23 +108,39 @@ const ManualRefund = ({ onManTransfer }) => {
                     <form className='mal-refund' onSubmit={onSubmit}>
 
                         <div className='form-control'>
-                            <label>Account Id</label>
-                            <input
+                            <label>Account ID</label>
+                            {/* <input
                             type="text"
                             placeholder='Enter Account Id'
                             value = {acc_id}
                             onChange={(e) => setAccId(e.target.value)}
-                            />
+                            /> */}
+                        <Select
+                            showSearch
+                            style={{ width: 550 }}
+                            placeholder="Enter Account ID to refund"
+                            optionFilterProp="children"
+                            onChange={onChange_ddown}
+                        >
+                            {/* <Option value="jack">Jack</Option>
+                            <Option value="lucy">Lucy</Option>
+                            <Option value="tom">Tom</Option> */}
+                        <Option value="jack" disabled>Enter AccountID to refund</Option>
+                        {aid.map((option) => (
+                               <Option value={option} key={option}>{option}</Option>
+                        ))}
+                        </Select>
                         </div>
 
                         <div className='form-control'>
-                            <label>Ammount</label>
+                            <label>Amount</label>
                             <input
                             type="text"
-                            placeholder='Enter Ammount'
+                            placeholder='Enter Amount'
                             value = {amt}
                             onChange={(e) => setAmt(e.target.value)}
                             />
+    
                         </div>
 
                         <div className='form-control form-control-check'>
@@ -89,6 +161,9 @@ const ManualRefund = ({ onManTransfer }) => {
 
                     </form>
             </Segment>
+            <Modal title="Transaction Initiated" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <p>Manual Refund has been processed successfully</p>
+      </Modal>
                 
         </div>
     )
