@@ -55,5 +55,5 @@ class AccountViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=False, url_path='get', url_name='get', permission_classes=[IsAuthenticated])
     def get_accounts(self, request):
-        payees = Account.objects.filter(user=self.request.user)
+        payees = Account.objects.filter(user=self.request.user, isActive='Y')
         return Response(AccountSerializer(payees, many=True).data)
