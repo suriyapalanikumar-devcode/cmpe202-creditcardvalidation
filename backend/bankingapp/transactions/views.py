@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from sequences import get_next_value
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from .serializers import TransactionSerializer
@@ -64,7 +64,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if 'fromDate' in request.data and len(request.data['fromDate']) != 0:
             filters['creationDate__gte'] = datetime.strptime(request.data['fromDate'], '%Y-%m-%d')
         if 'toDate' in request.data and len(request.data['toDate']) != 0:
-            filters['creationDate__lte'] = datetime.strptime(request.data['toDate'], '%Y-%m-%d')
+            filters['creationDate__lt'] = datetime.strptime(request.data['toDate'], '%Y-%m-%d') + timedelta(days=1)
         transactions = TransactionSerializer(Transaction.objects.filter(**filters), many=True)
         return Response(transactions.data)
 
