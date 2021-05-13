@@ -79,9 +79,7 @@ const NewAccount = ({ onAdd }) => {
                 setIsModalVisible(true);
             })
             .catch(err => {
-                this.setState({
-                    "display":false
-                })
+                console.log(err)
                 
             });
 
