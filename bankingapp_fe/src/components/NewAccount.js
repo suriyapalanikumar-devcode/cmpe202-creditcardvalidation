@@ -4,6 +4,7 @@ import React from "react";
 import {Segment} from 'semantic-ui-react';
 import { useState } from 'react';
 import axios from 'axios';
+import configData from "./config.json";
 import { Modal, Button, InputNumber } from 'antd';
 
 
@@ -115,7 +116,7 @@ const NewAccount = ({ onAdd }) => {
             const json_args = { accountType:dropdown, user, balance:balance };
             const token = localStorage.getItem("token")
 
-            axios.post(`http://localhost:8000/accounts/accounts/openAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
+            axios.post(configData.HOST_URL + '/accounts/accounts/openAccount/', json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
                 setIsModalVisible(true);
                 setFname("")

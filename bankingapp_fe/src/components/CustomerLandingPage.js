@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from "axios";
+import configData from "./config.json";
 import { Grid, Segment} from 'semantic-ui-react';    
 import { useState, useEffect } from "react";
 function CustomerLandingPage() {
@@ -16,7 +17,7 @@ function CustomerLandingPage() {
     try {
       
       const token = localStorage.getItem("token")
-      const result = await axios.get(`http://localhost:8000/accounts/accounts/get/`, { headers: { 'Authorization': `token ${token}` } })
+      const result = await axios.get(configData.HOST_URL + '/accounts/accounts/get/', { headers: { 'Authorization': `token ${token}` } })
       console.log("result", result)
       setUsersData(result.data)
   } catch (error) {

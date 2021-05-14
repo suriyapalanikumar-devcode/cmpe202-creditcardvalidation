@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import moment from "moment";
 import axios from 'axios';
+import configData from "./config.json";
 import { Grid, Segment} from 'semantic-ui-react';    
 import ExistingPayments from './ExistingPayments';
 import Navbar1 from "./Navbar1"
@@ -29,7 +30,7 @@ function RecurringPayments1() {
     const token = localStorage.getItem("token")
     //fetch users data
     const fetchUsersData = async () => {
-        const res = await fetch(`http://localhost:8000/accounts/accounts/get/`, { headers: { 'Authorization': `token ${token}` } });
+        const res = await fetch(configData.HOST_URL + '/accounts/accounts/get/', { headers: { 'Authorization': `token ${token}` } });
         const data = await res.json();
         return data;
        };
@@ -45,7 +46,7 @@ function RecurringPayments1() {
   
   //fetch users data
   const fetchPaymentsData = async () => {
-      const res = await fetch(`http://localhost:8000/payees/payees/get/` ,{ headers: { 'Authorization': `token ${token}` } })
+      const res = await fetch(configData.HOST_URL + '/payees/payees/get/' ,{ headers: { 'Authorization': `token ${token}` } })
       const data = await res.json();
       return data;
   };
@@ -97,7 +98,7 @@ function RecurringPayments1() {
         //   body: JSON.stringify(setUpPayments)
         //   });
 
-        axios.post(`http://localhost:8000/payees/payees/add/`, setUpPayments, { headers: { 'Authorization': `token ${token}` } })
+        axios.post(configData.HOST_URL + '/payees/payees/add/', setUpPayments, { headers: { 'Authorization': `token ${token}` } })
           .then(res => {
             console.log(res.data)
             setPaymentsData([...paymentsData, res.data.payee]);

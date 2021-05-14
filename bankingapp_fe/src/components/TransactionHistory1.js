@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
+import configData from "./config.json";
 import TransactionsTable from "./TransactionsTable"
 import { Grid, Segment } from "semantic-ui-react";
 import Navbar1 from "./Navbar1"
@@ -24,7 +25,7 @@ function TransactionHistory1() {
   const token = localStorage.getItem("token")
   //fetch users data
   const fetchUsersData = async () => {
-    const res = await fetch(`http://localhost:8000/accounts/accounts/get/`, { headers: { 'Authorization': `token ${token}` } });
+    const res = await fetch(configData.HOST_URL + '/accounts/accounts/get/', { headers: { 'Authorization': `token ${token}` } });
       const data = await res.json();
       return data;
   };
@@ -68,7 +69,7 @@ function TransactionHistory1() {
       };
     
       const token = localStorage.getItem("token")
-      axios.post(`http://localhost:8000/transactions/transactions/search/`, viewTransactions, { headers: { 'Authorization': `token ${token}` } })
+      axios.post(configData.HOST_URL + '/transactions/transactions/search/', viewTransactions, { headers: { 'Authorization': `token ${token}` } })
         .then(res => {
           setRespData(res.data)
        

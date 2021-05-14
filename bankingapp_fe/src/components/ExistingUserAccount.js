@@ -5,6 +5,7 @@ import {Segment} from 'semantic-ui-react';
 import { useState } from 'react';
 import { Select } from 'antd';
 import axios from 'axios';
+import configData from "./config.json";
 import { Modal, Button } from 'antd';
 
 const { Option } = Select;
@@ -46,7 +47,7 @@ const NewAccount = ({ onAdd }) => {
     useEffect(()=>{
         const email_temp = [];
         const token = localStorage.getItem("token")
-        axios.get(`http://localhost:8000/users/users`, {headers:{'Authorization': `token ${token}`}})
+        axios.get(configData.HOST_URL + '/users/users', {headers:{'Authorization': `token ${token}`}})
         .then(res => {
             console.log(res)
             res.data.users.forEach(element => {
@@ -93,7 +94,7 @@ const NewAccount = ({ onAdd }) => {
             const json_args = { accountType:dropdown, user:user, balance:balance };
             const token = localStorage.getItem("token")
             // Making post request to new account openning api
-            axios.post(`http://localhost:8000/accounts/accounts/openAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
+            axios.post(configData.HOST_URL + '/accounts/accounts/openAccount/', json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
                 setIsModalVisible(true);
                 // setting form to empty state
