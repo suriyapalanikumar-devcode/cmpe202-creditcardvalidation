@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import {Segment} from 'semantic-ui-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import configData from "./config.json";
 import { Modal, Button } from 'antd';
 import { Select } from 'antd';
 
@@ -45,7 +46,7 @@ const ManualRefund = ({ onManTransfer }) => {
         const token = localStorage.getItem("token")
         if(token)
         {
-            fetch ('http://localhost:8000/accounts/accounts/accid/',
+            fetch (configData.HOST_URL + '/accounts/accounts/accid/',
             {
               method: "post",
               headers: {
@@ -108,7 +109,7 @@ const ManualRefund = ({ onManTransfer }) => {
             if(token)
             {
             // Making post request to manual transfer api
-            axios.post(`http://localhost:8000/transactions/transactions/add/`, json_args, {headers:{'Authorization': `token ${token}`}})
+            axios.post(configData.HOST_URL + '/transactions/transactions/add/', json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
                 setIsModalVisible(true);
                 // setting form to empty

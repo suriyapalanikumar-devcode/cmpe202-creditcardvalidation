@@ -4,7 +4,7 @@ import { Modal} from 'antd';
 import Navbar1 from "./Navbar1"
 import { Grid, Segment} from 'semantic-ui-react';    
 import { useState, useEffect } from "react";
-//import {Modal} from 'antd';
+import configData from "./config.json";
 function Transfer1() {
 
     const [usersData, setUsersData] = useState([]);
@@ -45,9 +45,9 @@ function Transfer1() {
   const getData = async () => {
     try {
       
-      // const result = await axios.get("http://localhost:8000/accounts/accounts/get")
+      // const result = await axios.get(configData.HOST_URL + "/accounts/accounts/get")
       const token = localStorage.getItem("token")
-      const result = await axios.get(`http://localhost:8000/accounts/accounts/get/`, { headers: { 'Authorization': `token ${token}` } })
+      const result = await axios.get(configData.HOST_URL + '/accounts/accounts/get/', { headers: { 'Authorization': `token ${token}` } })
       console.log(result)
       setUsersData(()=>result.data)
   } catch (error) {
@@ -89,7 +89,7 @@ function Transfer1() {
       
       const transfer = { fromAccount: fromAccountNumber, toAccount: toAccountNumber, amount: amount, txnDesc: message }
       const token = localStorage.getItem("token")
-      axios.post(`http://localhost:8000/transactions/transactions/transfer/`, transfer, { headers: { 'Authorization': `token ${token}` } })
+      axios.post(configData.HOST_URL + '/transactions/transactions/transfer/', transfer, { headers: { 'Authorization': `token ${token}` } })
         .then(res => {
         
           setFromAccountNumber("")

@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useHistory, withRouter } from "react-router-dom";
 import NavbarLogin from './NavbarLogin'
 import Admin1 from "./Admin1";
+import configData from "./config.json";
 
 
 
@@ -36,7 +37,7 @@ class Login extends React.Component {
 
     handleSubmit = (event) =>{
         //let history = useHistory();
-        axios.post(`http://localhost:8000/users/login`, { "email":event["username"], "password":event["password"] })
+        axios.post(configData.HOST_URL + '/users/login', { "email":event["username"], "password":event["password"] })
             .then(res => {
                 localStorage.setItem('token',res.data.access)
                 if(res.data.authenticatedUser.role=="ADMIN")

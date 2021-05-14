@@ -4,6 +4,7 @@ import React from "react";
 import {Segment} from 'semantic-ui-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import configData from "./config.json";
 import { Modal, Button, InputNumber } from 'antd';
 
 

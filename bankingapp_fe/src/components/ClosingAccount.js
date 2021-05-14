@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import {Segment} from 'semantic-ui-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import configData from "./config.json";
 // import React, { useEffect } from "react";
 import { Select } from 'antd';
 import { Modal, Button } from 'antd';
@@ -34,7 +35,7 @@ const ClosingAccount = ({ onClosingAccount }) => {
         const token = localStorage.getItem("token")
         if(token)
         {   
-        fetch ('http://localhost:8000/accounts/accounts/accid/',
+            fetch (configData.HOST_URL + '/accounts/accounts/accid/',
             {
               method: "post",
               headers: {
@@ -92,7 +93,7 @@ const ClosingAccount = ({ onClosingAccount }) => {
             // sending form data for post request
             const json_args = { account:acc_id };
             const token = localStorage.getItem("token")
-            axios.post(`http://localhost:8000/accounts/accounts/${acc_id}/closeAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
+            axios.post(configData.HOST_URL + `/accounts/accounts/${acc_id}/closeAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
                 setIsModalVisible(true);       
                 del_user()
