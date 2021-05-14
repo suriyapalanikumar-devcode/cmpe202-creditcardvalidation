@@ -97,7 +97,7 @@ const ClosingAccount = ({ onClosingAccount }) => {
             // sending form data for post request
             const json_args = { account:acc_id };
             const token = localStorage.getItem("token")
-            axios.post(configData.HOST_URL + '/accounts/accounts/${acc_id}/closeAccount/', json_args, {headers:{'Authorization': `token ${token}`}})
+            axios.post(configData.HOST_URL + `/accounts/accounts/${acc_id}/closeAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
                 setIsModalVisible(true);       
                 del_user()
