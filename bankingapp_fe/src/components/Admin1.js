@@ -9,7 +9,10 @@ function Admin1() {
     <div className="App">
      
     <Navbar />
-
+    <div>
+    <h1>Welcome Admin!!!!</h1>
+    </div>
+    
     </div>
     
   );

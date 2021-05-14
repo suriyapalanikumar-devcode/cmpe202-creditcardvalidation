@@ -108,7 +108,7 @@ const ManualRefund = ({ onManTransfer }) => {
                 setDropdown("check")
             })
             .catch(err => {
-                error("Transaction couldn't be initiated. Please check with help Desk")
+                error("Insufficient Funds")
             })
         }
         else{
