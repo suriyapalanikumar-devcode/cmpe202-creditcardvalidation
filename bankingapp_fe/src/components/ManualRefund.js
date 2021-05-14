@@ -18,8 +18,8 @@ const ManualRefund = ({ onManTransfer }) => {
 
     function error(text) {
         Modal.error({
-          title: 'This is an error message',
-          content:text,
+          title: text,
+         // content:text,
         });
     }
 
@@ -43,7 +43,9 @@ const ManualRefund = ({ onManTransfer }) => {
 
     const del_user = () =>{
         const token = localStorage.getItem("token")
-        fetch ('http://localhost:8000/accounts/accounts/accid/',
+        if(token)
+        {
+            fetch ('http://localhost:8000/accounts/accounts/accid/',
             {
               method: "post",
               headers: {
@@ -59,6 +61,11 @@ const ManualRefund = ({ onManTransfer }) => {
         .catch(err => {
         console.log(err)        
         });
+        }
+        else{
+            error("You do not have permission. Please login back.")
+        }
+
     }
 
     useEffect(()=>{
@@ -98,6 +105,8 @@ const ManualRefund = ({ onManTransfer }) => {
             // sending form data for post request
             const json_args = { txnType:dropdown, txnDesc:"manual refund",amount:amt, account:acc_id };
             const token = localStorage.getItem("token")
+            if(token)
+            {
             // Making post request to manual transfer api
             axios.post(`http://localhost:8000/transactions/transactions/add/`, json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
@@ -110,6 +119,11 @@ const ManualRefund = ({ onManTransfer }) => {
             .catch(err => {
                 error("Insufficient Funds")
             })
+            }
+            else{
+                error("You do not have permission. Please login back.")
+            }
+
         }
         else{
             console.log("something wrong")

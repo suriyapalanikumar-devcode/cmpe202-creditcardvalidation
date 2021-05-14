@@ -4,7 +4,8 @@ import moment from "moment";
 import axios from 'axios';
 import { Grid, Segment} from 'semantic-ui-react';    
 import ExistingPayments from './ExistingPayments';
-import Navbar1 from "./Navbar1"
+import Navbar1 from "./Navbar1";
+import {Modal} from 'antd';
 function RecurringPayments1() {
 
   
@@ -17,14 +18,26 @@ function RecurringPayments1() {
     const [payeeAccount, setPayeeAccount] = useState([]);
     const [usersData, setUsersData] = useState([]);
     const [paymentsData, setPaymentsData] = useState([]);
-  
+    function error(text) {
+      Modal.error({
+        title: text,
+       // content:text,
+      });
+  }
     
     useEffect(() => {
+      const token = localStorage.getItem("token")
+      if(token)
+      {
       const getUserData = async () => {
         const uDataFromServer = await fetchUsersData();
         setUsersData(uDataFromServer);
       };
       getUserData();
+    }
+    else{
+      error("You do not have permission. Please login back.")
+    }
     }, []); 
     const token = localStorage.getItem("token")
     //fetch users data

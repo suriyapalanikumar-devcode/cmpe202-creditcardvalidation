@@ -20,8 +20,8 @@ const ClosingAccount = ({ onClosingAccount }) => {
 
     function error(text) {
         Modal.error({
-          title: 'This is an error message',
-          content:text,
+          title: text,
+         // content:text,
         });
     }
 
@@ -32,6 +32,8 @@ const ClosingAccount = ({ onClosingAccount }) => {
 
     const del_user = () =>{
         const token = localStorage.getItem("token")
+        if(token)
+        {   
         fetch ('http://localhost:8000/accounts/accounts/accid/',
             {
               method: "post",
@@ -49,28 +51,22 @@ const ClosingAccount = ({ onClosingAccount }) => {
             error("AccountID couldn't be fetched. Please check with help Desk")
         });
     }
+    else{
+        error("You do not have permission. Please login back.")
+    }
+    }
 
     useEffect(()=>{
         const email_temp = [];
+
         const token = localStorage.getItem("token")
-        // fetch ('http://localhost:8000/accounts/accounts/accid/',
-        //     {
-        //       method: "post",
-        //       headers: {
-        //         'Authorization': `token ${token}`
-        //       },
-              
-        //     })
-        // .then(res => res.json())
-        // .then(data=>{
-        //     setaid(data)
-        // }
-        // )                   
-        // .catch(err => {
-        // console.log(err)        
-        // });
+        if(token)
+        {
         del_user()
-        
+        }
+        else{
+            error("You do not have permission. Please login back.")
+        }
     },[]);
 
     const onChange_ddown = (value) => {

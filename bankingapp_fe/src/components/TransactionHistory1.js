@@ -4,7 +4,9 @@ import moment from "moment";
 import axios from "axios";
 import TransactionsTable from "./TransactionsTable"
 import { Grid, Segment } from "semantic-ui-react";
+import {Modal} from 'antd';
 import Navbar1 from "./Navbar1"
+import { FaSortAmountDown } from "react-icons/fa";
 function TransactionHistory1() {
 
   const [usersData, setUsersData] = useState([]);
@@ -14,12 +16,28 @@ function TransactionHistory1() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [respData, setRespData]=useState([]);
+
+  function error(text) {
+    Modal.error({
+      title: text,
+     // content:text,
+    });
+}
+
  useEffect(() => {
+  const token = localStorage.getItem("token")
+  if(token)
+  {
     const getUserData = async () => {
       const uDataFromServer = await fetchUsersData();
       setUsersData(uDataFromServer);
     };
     getUserData();
+  }
+  else{
+    error("You do not have permission. Please login back.")
+  }
+
   }, []); 
   const token = localStorage.getItem("token")
   //fetch users data

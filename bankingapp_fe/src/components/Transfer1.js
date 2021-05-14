@@ -4,6 +4,7 @@ import { Modal} from 'antd';
 import Navbar1 from "./Navbar1"
 import { Grid, Segment} from 'semantic-ui-react';    
 import { useState, useEffect } from "react";
+//import {Modal} from 'antd';
 function Transfer1() {
 
     const [usersData, setUsersData] = useState([]);
@@ -20,8 +21,24 @@ function Transfer1() {
     const handleCancel = () => {
         setIsModalVisible(false);
     };
+    function error(text) {
+      Modal.error({
+        title: text,
+       // content:text,
+      });
+  }
+  
+
   useEffect(() => {
-    getData();
+    const token = localStorage.getItem("token")
+    if(token)
+    {
+      getData();
+    }
+    else{
+      error("You do not have permission. Please login back.")
+    }
+
     
   }, [])
   

@@ -2,13 +2,30 @@ import React from 'react'
 import axios from "axios";
 import { Grid, Segment} from 'semantic-ui-react';    
 import { useState, useEffect } from "react";
+import {Modal} from 'antd';
 function CustomerLandingPage() {
 
     const [usersData, setUsersData] = useState([]);
     const [accountNumber, setAccountNumber] = useState("")
+
+  function error(text) {
+      Modal.error({
+        title: text,
+       // content:text,
+      });
+  }
    
   useEffect(() => {
-    getData();
+    const token = localStorage.getItem("token")
+    if(token)
+    {
+      getData();
+    }
+    else
+    {
+      error("You do not have permission. Please login back.")
+    }
+    
     
   }, [])
   

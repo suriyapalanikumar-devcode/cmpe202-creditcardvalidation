@@ -2,7 +2,7 @@
 
 import React from "react";
 import {Segment} from 'semantic-ui-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, InputNumber } from 'antd';
 
@@ -23,10 +23,21 @@ const NewAccount = ({ onAdd }) => {
 
     function error(text) {
         Modal.error({
-          title: 'This is an error message',
-          content:text,
+          title: text,
+          
         });
       }
+
+      useEffect(()=>{
+        const token = localStorage.getItem("token")
+        if(token)
+        {
+            console.log("success")
+        }
+        else{
+            error("You do not have permission. Please login back.")
+        }
+    },[]);
 
     const validation = (ssn1, phone1, email1,bal1) =>  {
         //SSN Validation
@@ -114,24 +125,30 @@ const NewAccount = ({ onAdd }) => {
             const user = {email:email, first_name:fname, last_name:lname, mobile:phone, password:password, ssn:ssn};
             const json_args = { accountType:dropdown, user, balance:balance };
             const token = localStorage.getItem("token")
+            if(token)
+            {
+                axios.post(`http://localhost:8000/accounts/accounts/openAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
+                .then(res => {
+                    setIsModalVisible(true);
+                    setFname("")
+                    setLname("")
+                    setSsn("")
+                    setPhone("")
+                    setEmail("")
+                    setPassword("")
+                    setRePassword("")
+                    setInitialBalance("")
+                    setDropdown("savings")
+                })
+                .catch(err => {
+                    error("New Account Couldn't be created. Please check with Help Desk")
+                    
+                });
+            }
+            else{
+                error("You do not have permission. Please login back.")
+            }
 
-            axios.post(`http://localhost:8000/accounts/accounts/openAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
-            .then(res => {
-                setIsModalVisible(true);
-                setFname("")
-                setLname("")
-                setSsn("")
-                setPhone("")
-                setEmail("")
-                setPassword("")
-                setRePassword("")
-                setInitialBalance("")
-                setDropdown("savings")
-            })
-            .catch(err => {
-                error("New Account Couldn't be created. Please check with Help Desk")
-                
-            });
         }
         else{
             console.log("Something is wrong in validation")

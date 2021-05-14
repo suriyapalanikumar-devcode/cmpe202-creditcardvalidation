@@ -14,8 +14,8 @@ const NewAccount = ({ onAdd }) => {
 
     function error(text) {
         Modal.error({
-          title: 'This is an error message',
-          content:text,
+          title: text,
+        //   content:text,
         });
     }
 
@@ -46,17 +46,24 @@ const NewAccount = ({ onAdd }) => {
     useEffect(()=>{
         const email_temp = [];
         const token = localStorage.getItem("token")
-        axios.get(`http://localhost:8000/users/users`, {headers:{'Authorization': `token ${token}`}})
-        .then(res => {
-            console.log(res)
-            res.data.users.forEach(element => {
-            email_temp.push(element["email"])
-            });  
-            setUniqueUsers(email_temp);
-        })
-        .catch(err => {
-            error("User Details couldn't be fetched. Please check with help Desk")     
-        });
+        if(token)
+        {
+            axios.get(`http://localhost:8000/users/users`, {headers:{'Authorization': `token ${token}`}})
+            .then(res => {
+                console.log(res)
+                res.data.users.forEach(element => {
+                email_temp.push(element["email"])
+                });  
+                setUniqueUsers(email_temp);
+            })
+            .catch(err => {
+                error("User Details couldn't be fetched. Please check with help Desk")     
+            });
+        }
+        else{
+            error("You do not have permission. Please login back.")
+        }
+
     },[]);
 
     const onChange_ddown = (value) => {
@@ -92,6 +99,8 @@ const NewAccount = ({ onAdd }) => {
             const user = {email:email, first_name:null, last_name:null, mobile:null, password:null, ssn:null};
             const json_args = { accountType:dropdown, user:user, balance:balance };
             const token = localStorage.getItem("token")
+            if (token)
+            {
             // Making post request to new account openning api
             axios.post(`http://localhost:8000/accounts/accounts/openAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
@@ -106,6 +115,12 @@ const NewAccount = ({ onAdd }) => {
                 error("Account couldn't be created. Please check with help Desk")
                 
             });
+
+            }
+            else{
+                error("You do not have permission. Please login back.")
+            }
+ 
             }
             else{
                 console.log("Something wrong")

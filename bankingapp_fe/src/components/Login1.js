@@ -33,6 +33,7 @@ class Login extends React.Component {
         }
     }
 
+
     handleSubmit = (event) =>{
         //let history = useHistory();
         axios.post(`http://localhost:8000/users/login`, { "email":event["username"], "password":event["password"] })
@@ -58,7 +59,7 @@ class Login extends React.Component {
     render(){
         return(
             <div >
-                
+            {localStorage.clear()}    
            <NavbarLogin/>
             <Segment className="containerLogin" style={{marginTop:"10%"}}>
             <Grid centered>
