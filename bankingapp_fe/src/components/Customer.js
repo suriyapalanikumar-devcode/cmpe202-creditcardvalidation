@@ -1,5 +1,6 @@
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+import CustomerLandingPage from './CustomerLandingPage';
 
 import Navbar1 from './Navbar1'
 function Customer() {
@@ -9,7 +10,8 @@ function Customer() {
   return (
     <div >
       
-     <Navbar1 />
+      <Navbar1 />
+      <CustomerLandingPage/>
     </div>
     
   );

@@ -1,10 +1,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import moment from "moment";
+import axios from "axios";
 import TransactionsTable from "./TransactionsTable"
 import { Grid, Segment } from "semantic-ui-react";
 import Navbar1 from "./Navbar1"
-function TransactionHistory() {
+function TransactionHistory1() {
 
   const [usersData, setUsersData] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -12,7 +13,7 @@ function TransactionHistory() {
   const [transactionType, setTransactionType] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
+  const [respData, setRespData]=useState([]);
  useEffect(() => {
     const getUserData = async () => {
       const uDataFromServer = await fetchUsersData();
@@ -20,24 +21,27 @@ function TransactionHistory() {
     };
     getUserData();
   }, []); 
-
+  const token = localStorage.getItem("token")
   //fetch users data
   const fetchUsersData = async () => {
-      const res = await fetch("http://localhost:5001/userData");
+    const res = await fetch(`http://localhost:8000/accounts/accounts/get/`, { headers: { 'Authorization': `token ${token}` } });
       const data = await res.json();
       return data;
   };
   
-  const viewTransactions = async (viewTransactionsData) => {
-    const res = await fetch('http://localhost:5002/viewTransactionsData',
-      {
-        method: "POST",
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(viewTransactionsData)
-      })
-  }
+  // const viewTransactions = async (viewTransactionsData) => {
+  //   const res = await fetch(`http://localhost:8000/transactions/transactions/search/`, 
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         'Content-type': 'application/json',
+  //         'Authorization': `token ${token}`
+  //       },
+  //       body: JSON.stringify(viewTransactionsData)
+  //     })
+  //     console.log(res.json)
+  // }
+  
 
 
   let isFromGreaterThanTo = false;
@@ -56,17 +60,25 @@ function TransactionHistory() {
       setToDate("");
       alert("To Date must be greater than From Date")
     } else {
-      viewTransactions({
-        accNo: accountNumber,
-        transType: transactionType,
+      const viewTransactions={
+        accountNumber: Number(accountNumber),
+        txnType: transactionType,
         fromDate: fromDate,
         toDate: toDate,
-      });
-      setVisible(true)
+      };
+    
+      const token = localStorage.getItem("token")
+      axios.post(`http://localhost:8000/transactions/transactions/search/`, viewTransactions, { headers: { 'Authorization': `token ${token}` } })
+        .then(res => {
+          setRespData(res.data)
+       
+          setVisible(true)
       setAccountNumber("");
       setTransactionType("");
       setFromDate("");
-      setToDate("");    
+      setToDate("");  
+      
+        })       
     }
   };
 
@@ -86,38 +98,41 @@ function TransactionHistory() {
               
             <div className='form-control'>
                
-            <label>Select Account Number</label>
+            <label style={{ marginLeft: "1%" }}>Select Account Number</label>
                 <select  className="drop" style={{ marginLeft: "1%" }}
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)} required >
                 <option > -- select an option -- </option>
                   {usersData.map((user) => (
-                    <option value={user.accountnumber}>
-                      {user.accountnumber}
+                    <option value={user.accountNumber}>
+                      {user.accountNumber}
                     </option>
                   ))}
                 </select>
 
-       
+       </div>
             
             
-        <div style={ {display:"inline-block", marginLeft:"150px"}}>
+       <div className='form-control'>
                 
                 
-                <label style={{ marginLeft: -10 }}>Select Transaction Type</label>
+                <label style={{ marginLeft: "1%" }}>Select Transaction Type</label>
                 <select  className="drop"
                   value={transactionType}
-                  onChange={(e) => setTransactionType(e.target.value)}
+                  onChange={(e) => setTransactionType(e.target.value)} style={{ marginLeft: "1%" }}
                 >
-                <option > -- select an option -- </option>
-                  <option value="Credit">Credit</option>
-                  <option value="Debit">Debit</option>
-                  <option value="Cheque_deposit">Cheque Deposit</option>
+                  <option > -- select an option -- </option>
+                  <option value="">All</option>
+                  <option value="CR">Credit</option>
+                  <option value="DR">Debit</option>
+                  <option value="CH">Cheque Deposits</option>
+                  <option value="FE">Fees</option>
+                  <option value="RF">Refunds</option>
                 </select>
 
        </div>
             
-        </div>
+        
             
 
               <div className="form-control">
@@ -131,6 +146,7 @@ function TransactionHistory() {
                   onChange={(e) => setFromDate(e.target.value)}
                   required
               ></input>
+              {console.log(fromDate)}
               
               </div>
 
@@ -138,12 +154,14 @@ function TransactionHistory() {
                 <label>To Date</label>
                 <input style={{padding:"17px"}}
                   type="date"
-                  name="tDate"
+                name="tDate"
+                value={toDate}
                   min={minDate.format("YYYY-MM-DD")}
                   max={today.format("YYYY-MM-DD")}
                   onChange={(e) => setToDate(e.target.value)}
                   required
-                ></input>
+              ></input>
+              {console.log(toDate)}
               </div>
 
               <input type="submit" value="View" className="btn btn-block" style={{ marginTop: "8%" }} />
@@ -152,8 +170,8 @@ function TransactionHistory() {
             <br/>
             
       </Segment>
-      <div style={{marginLeft:"30%"}}>
-          {visible ? <TransactionsTable /> : null}
+      <div className="containertranstable">
+        {visible ? <TransactionsTable respData={respData}/> : null}
           </div>
       {isFromGreaterThanTo && (<div>
       {alert("To Date must be greater than From Date")}
@@ -162,4 +180,4 @@ function TransactionHistory() {
   );
 }
 
-export default TransactionHistory;
+export default TransactionHistory1;

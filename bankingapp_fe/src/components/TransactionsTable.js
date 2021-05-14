@@ -6,24 +6,10 @@ import { useTable, useSortBy, usePagination} from 'react-table'
 import { COLUMNS } from './columns'
 
 
-export const TransactionsTable = () => {
-  useEffect(() => {
-    const getTransData = async () => {
-      const transDataFromServer = await fetchTransData();
-      setTransData(transDataFromServer);
-    };
-    getTransData();
-  }, []); 
-
-  //fetch users data
-  const fetchTransData = async () => {
-      const res = await fetch("http://localhost:5003/transHist");
-      const data = await res.json();
-      return data;
-  };
-const [transData, setTransData] = useState([]);
+export const TransactionsTable = ({respData}) => {
+  
   const columns = useMemo(() => COLUMNS, [])
-  const data = transData
+  const data = respData
   
 
 
@@ -55,7 +41,7 @@ const [transData, setTransData] = useState([]);
  
   return (
     <>
-    <semantic_header><div style={{marginLeft:"20%"}}><h1>Transaction History</h1></div></semantic_header>
+    <semantic_header><div style={{marginLeft:"30%"}}><h1>Transaction History</h1></div></semantic_header>
       <table className="content-table"{...getTableProps()}>
         <thead >
           {headerGroups.map((headerGroup) => (

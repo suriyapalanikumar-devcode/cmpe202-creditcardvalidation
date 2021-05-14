@@ -1,0 +1,29 @@
+{
+  "transHist": [
+    {
+        "account": 2,
+        "creationDate": "2021-04-17T17:02:01.023940Z",
+        "txnType": "DR",
+        "amount": "100.12",
+        "txnRefNo": 1,
+        "txnDesc": "self transfer"
+    },
+    {
+      "account": 333,
+      "creationDate": "2021-04-17T17:02:01.023940Z",
+      "txnType": "DR",
+      "amount": "100.12",
+      "txnRefNo": 11111111,
+      "txnDesc": "self transfer"
+  },
+  {
+    "account": 2555,
+    "creationDate": "2021-04-17T17:02:01.023940Z",
+    "txnType": "DR",
+    "amount": "100.12",
+    "txnRefNo": 323,
+    "txnDesc": "self transfer"
+}
+]
+  
+}
