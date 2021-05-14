@@ -11,12 +11,20 @@ const { Option } = Select;
 
 const ClosingAccount = ({ onClosingAccount }) => {
 
-    const [acc_id, setAccId] = useState('')
+    const [acc_id, setAccId] = useState('Please enter account number')
     const [aid, setaid] = useState([])
     const [isModalVisible, setIsModalVisible] = useState(false);
     const handleOk = () => {
         setIsModalVisible(false);
     };
+
+    function error(text) {
+        Modal.error({
+          title: 'This is an error message',
+          content:text,
+        });
+    }
+
     
     const handleCancel = () => {
         setIsModalVisible(false);
@@ -38,7 +46,7 @@ const ClosingAccount = ({ onClosingAccount }) => {
         }
         )                   
         .catch(err => {
-        console.log(err)        
+            error("AccountID couldn't be fetched. Please check with help Desk")
         });
     }
 
@@ -92,10 +100,12 @@ const ClosingAccount = ({ onClosingAccount }) => {
             .then(res => {
                 setIsModalVisible(true);       
                 del_user()
-                setAccId("jack")
+                setAccId("Please enter account number")
+                //setInitialBalance("")
+                //onChange_ddown(aid[0])
             })
             .catch(err => {
-                console.log("err")
+                error("Account couldn't be closed. Please check with help Desk")
                 
             });
             // Making post request to closing account api
@@ -123,6 +133,7 @@ const ClosingAccount = ({ onClosingAccount }) => {
                             placeholder="Enter Account ID to delete"
                             optionFilterProp="children"
                             onChange={onChange_ddown}
+                            value={acc_id}
                         >
                             {/* <Option value="jack">Jack</Option>
                             <Option value="lucy">Lucy</Option>

@@ -4,7 +4,7 @@ import React from "react";
 import {Segment} from 'semantic-ui-react';
 import { useState } from 'react';
 import axios from 'axios';
-import { Modal, Button } from 'antd';
+import { Modal, Button, InputNumber } from 'antd';
 
 
 
@@ -21,7 +21,51 @@ const NewAccount = ({ onAdd }) => {
     const [balance, setInitialBalance] = useState('')
     const [dropdown, setDropdown] = useState("savings")
 
+    function error(text) {
+        Modal.error({
+          title: 'This is an error message',
+          content:text,
+        });
+      }
 
+    const validation = (ssn1, phone1, email1,bal1) =>  {
+        //SSN Validation
+        console.log(bal1)
+        console.log(!parseInt(bal1))
+        const numb = ssn1.match(/\d/g).join("")
+        const len_num = numb.length
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const email_valid = re.test(String(email1).toLowerCase())
+        const numb1 = phone1.match(/\d/g).join("")
+        const len_num1 = numb1.length
+        if(len_num1 != 10 || isNaN(phone1))   
+        {
+           error("Phone number Validation is wrong")
+           return false
+        }
+        if(len_num != 9 || isNaN(ssn1) )
+        {
+            error("SSN Validation is wrong")
+            return false
+        }
+        if( !email_valid)
+        {
+            error("Email Validation is wrong")
+            return false
+        }
+        if(isNaN(bal1))
+        {
+            error("Balance Shouldn't have alphanumeric value")
+            return false
+        }
+        return true;
+
+    }
+
+    const checkssn = (e) =>{
+
+        setSsn(e.target.value)
+    } 
     
     const handleOk = () => {
     setIsModalVisible(false);
@@ -32,7 +76,7 @@ const NewAccount = ({ onAdd }) => {
     };
 
     const onSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault() 
 
         // Form Validation
         if(!fname) {
@@ -63,8 +107,11 @@ const NewAccount = ({ onAdd }) => {
             alert("please enter opening balance")
         }
         else {
+            const b = validation(ssn, phone, email, balance)
+            if(b)
+            {
             // sending form data for post request
-            const user = {email:email, firstName:fname, lastName:lname, mobile:phone, password:password, ssn:ssn};
+            const user = {email:email, first_name:fname, last_name:lname, mobile:phone, password:password, ssn:ssn};
             const json_args = { accountType:dropdown, user, balance:balance };
             const token = localStorage.getItem("token")
 
@@ -82,9 +129,15 @@ const NewAccount = ({ onAdd }) => {
                 setDropdown("savings")
             })
             .catch(err => {
-                console.log(err)
+                error("New Account Couldn't be created. Please check with Help Desk")
                 
             });
+        }
+        else{
+            console.log("Something is wrong in validation")
+            
+        }
+
 
             // Making post request to new account openning api
             // const new_acc_res = fetch ('http://localhost:8000/accounts/accounts/openAccount/',
@@ -145,7 +198,7 @@ const NewAccount = ({ onAdd }) => {
                             type="text"
                             placeholder='Enter SSN'
                             value = {ssn}
-                            onChange={(e) => setSsn(e.target.value)}
+                            onChange={checkssn}
                             />
                         </div>
 
@@ -218,6 +271,10 @@ const NewAccount = ({ onAdd }) => {
             </Segment>
 
         <Modal title="Details Added" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <p>Account created successfully..!!</p>
+      </Modal>
+
+      <Modal title="Details Added" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
             <p>Account created successfully..!!</p>
       </Modal>
                 

@@ -11,10 +11,27 @@ const { Option } = Select;
 const ManualRefund = ({ onManTransfer }) => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [acc_id, setAccId] = useState('')
+    const [acc_id, setAccId] = useState('Please Enter Account Number')
     const [amt, setAmt] = useState('')
     const [dropdown, setDropdown] = useState('check')
     const [aid, setaid] = useState([])
+
+    function error(text) {
+        Modal.error({
+          title: 'This is an error message',
+          content:text,
+        });
+    }
+
+    const validation = (bal1) =>  {
+        if(isNaN(bal1))
+        {
+            error("Amount Shouldn't have alphanumeric value")
+            return false
+        }
+        return true;
+
+    }
 
     const handleOk = () => {
         setIsModalVisible(false);
@@ -75,6 +92,9 @@ const ManualRefund = ({ onManTransfer }) => {
             alert("please enter a valid amount")
         }
         else {
+            const b = validation(amt)
+            if(b)
+            {
             // sending form data for post request
             const json_args = { txnType:dropdown, txnDesc:"manual refund",amount:amt, account:acc_id };
             const token = localStorage.getItem("token")
@@ -82,17 +102,19 @@ const ManualRefund = ({ onManTransfer }) => {
             axios.post(`http://localhost:8000/transactions/transactions/add/`, json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
                 setIsModalVisible(true);
+                // setting form to empty
+                setAccId("Please enter Account Number")
+                setAmt("")
+                setDropdown("check")
             })
             .catch(err => {
-                this.setState({
-                    "display":false
-                })
+                error("Transaction couldn't be initiated. Please check with help Desk")
             })
+        }
+        else{
+            console.log("something wrong")
+        }
 
-            // setting form to empty
-            setAccId("")
-            setAmt("")
-            setDropdown("check")
         }
 
     }
@@ -121,6 +143,7 @@ const ManualRefund = ({ onManTransfer }) => {
                             placeholder="Enter Account ID to refund"
                             optionFilterProp="children"
                             onChange={onChange_ddown}
+                            value = {acc_id}
                         >
                             {/* <Option value="jack">Jack</Option>
                             <Option value="lucy">Lucy</Option>

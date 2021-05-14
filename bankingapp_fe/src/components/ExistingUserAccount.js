@@ -12,8 +12,24 @@ const { Option } = Select;
 const NewAccount = ({ onAdd }) => {
 
 
+    function error(text) {
+        Modal.error({
+          title: 'This is an error message',
+          content:text,
+        });
+    }
+
+    const validation = (bal1) =>  {
+        if(isNaN(bal1))
+        {
+            error("Balance Shouldn't have alphanumeric value")
+            return false
+        }
+        return true;
+
+    }
     
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState('Please enter EmailID')
     const [balance, setInitialBalance] = useState('')
     const [dropdown, setDropdown] = useState("savings")
     const [uniqueUsers, setUniqueUsers] = useState([]);
@@ -39,7 +55,7 @@ const NewAccount = ({ onAdd }) => {
             setUniqueUsers(email_temp);
         })
         .catch(err => {
-        console.log(err)        
+            error("User Details couldn't be fetched. Please check with help Desk")     
         });
     },[]);
 
@@ -70,23 +86,32 @@ const NewAccount = ({ onAdd }) => {
         }
         else {
             // sending form data for post request
-            const user = {email:email, firstName:null, lastName:null, mobile:null, password:null, ssn:null};
+            const b = validation( balance)
+            if(b)
+            {
+            const user = {email:email, first_name:null, last_name:null, mobile:null, password:null, ssn:null};
             const json_args = { accountType:dropdown, user:user, balance:balance };
             const token = localStorage.getItem("token")
             // Making post request to new account openning api
             axios.post(`http://localhost:8000/accounts/accounts/openAccount/`, json_args, {headers:{'Authorization': `token ${token}`}})
             .then(res => {
                 setIsModalVisible(true);
+                // setting form to empty state
+                setEmail("Please Enter EmailID")
+                setInitialBalance("")
+                setDropdown("savings")
+                //onChange_ddown(uniqueUsers[0])
             })
             .catch(err => {
-                console.log(err)
+                error("Account couldn't be created. Please check with help Desk")
                 
             });
+            }
+            else{
+                console.log("Something wrong")
+            }
 
-            // setting form to empty state
-            setEmail("")
-            setInitialBalance("")
-            setDropdown("savings")
+
         }
 
     }
@@ -107,6 +132,7 @@ const NewAccount = ({ onAdd }) => {
                             placeholder="Enter customer's Email"
                             optionFilterProp="children"
                             onChange={onChange_ddown}
+                            value = {email}
                         >
                             {/* <Option value="jack">Jack</Option>
                             <Option value="lucy">Lucy</Option>
@@ -133,6 +159,7 @@ const NewAccount = ({ onAdd }) => {
                             placeholder='Enter Initial Balance'
                             value = {balance}
                             onChange={(e) => setInitialBalance(e.target.value)}
+
                             />
                         </div>
 
