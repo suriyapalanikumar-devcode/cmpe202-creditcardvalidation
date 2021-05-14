@@ -42,7 +42,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         # if existing_user_id != 0:
         #     customer = User.objects.get(id=existing_user_id)
 
-        if (not user_json["firstName"] and not user_json["lastName"]
+        if (not user_json["first_name"] and not user_json["last_name"]
                 and not user_json["password"] and not user_json["ssn"]
                 and not user_json["mobile"] and user_json["email"]):
                 customer = User.objects.get(email=user_json["email"])
