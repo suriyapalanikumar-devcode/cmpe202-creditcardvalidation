@@ -18,5 +18,6 @@ class Transaction(models.Model):
     txnType = models.CharField(choices=TxnTypes.choices, default=TxnTypes.DEBIT, max_length=10)
     createdBy = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     txnDesc = models.CharField(max_length=255)
     creationDate = models.DateTimeField(auto_now_add=True)

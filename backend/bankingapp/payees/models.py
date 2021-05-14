@@ -15,3 +15,8 @@ class Payee(models.Model):
     registrationDate = models.DateField(auto_now_add=True)
     nextDueDate = models.DateField(null=True)
     lastPaymentDate = models.DateField(null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['payeeName', 'user'], name='uk_payee_name')
+        ]

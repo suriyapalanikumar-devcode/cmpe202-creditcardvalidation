@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from sequences import get_next_value
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from .serializers import TransactionSerializer
@@ -31,18 +31,18 @@ class TransactionViewSet(viewsets.ModelViewSet):
             return Response({'status': 'Failure', 'message': 'Insufficient balance'})
         user = from_account.user
         txn_ref_no = get_next_value("txnRefNo")
+        from_account.balance -= amount
+        to_account.balance += amount
         debit_entry = Transaction.objects.create(txnRefNo=txn_ref_no, account=from_account,
                                                  txnType=Transaction.TxnTypes.DEBIT, createdBy=user,
-                                                 amount=amount, txnDesc=txn_desc)
-        from_account.balance -= amount
+                                                 amount=amount, txnDesc=txn_desc, balance=from_account.balance)
         credit_entry = Transaction.objects.create(txnRefNo=txn_ref_no, account=to_account,
                                                   txnType=Transaction.TxnTypes.CREDIT, createdBy=user,
-                                                  amount=amount, txnDesc=txn_desc)
-        to_account.balance += amount
-        debit_entry.save()
-        credit_entry.save()
+                                                  amount=amount, txnDesc=txn_desc, balance=to_account.balance)
         from_account.save()
         to_account.save()
+        debit_entry.save()
+        credit_entry.save()
         return Response({'status': 'Success', 'message': 'Money transferred!',
                          'transactionDetails': TransactionSerializer(debit_entry).data})
 
@@ -64,7 +64,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if 'fromDate' in request.data and len(request.data['fromDate']) != 0:
             filters['creationDate__gte'] = datetime.strptime(request.data['fromDate'], '%Y-%m-%d')
         if 'toDate' in request.data and len(request.data['toDate']) != 0:
-            filters['creationDate__lte'] = datetime.strptime(request.data['toDate'], '%Y-%m-%d')
+            filters['creationDate__lt'] = datetime.strptime(request.data['toDate'], '%Y-%m-%d') + timedelta(days=1)
         transactions = TransactionSerializer(Transaction.objects.filter(**filters), many=True)
         return Response(transactions.data)
 
@@ -78,6 +78,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
             account.balance -= Decimal(transaction.amount)
         else:
             account.balance += Decimal(transaction.amount)
-        transaction.save()
         account.save()
-        return Response(TransactionSerializer(transaction).data)
+        transaction.balance = account.balance
+        transaction.save()
+        return Response({'status': 'Success', 'message': 'Transaction was successful!',
+                         'transaction': TransactionSerializer(transaction).data})
