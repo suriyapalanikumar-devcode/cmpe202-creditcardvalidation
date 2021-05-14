@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import moment from "moment";
+import axios from 'axios';
 import { Grid, Segment} from 'semantic-ui-react';    
 import ExistingPayments from './ExistingPayments';
 import Navbar1 from "./Navbar1"
@@ -13,7 +14,7 @@ function RecurringPayments1() {
     const [paymentTitle, setPaymentTitle] = useState("")
     const [paymentDate, setPaymentDate] = useState("")
     const [frequency, setFrequency] = useState("")
-
+    const [payeeAccount, setPayeeAccount] = useState([]);
     const [usersData, setUsersData] = useState([]);
     const [paymentsData, setPaymentsData] = useState([]);
   
@@ -25,10 +26,10 @@ function RecurringPayments1() {
       };
       getUserData();
     }, []); 
-  
+    const token = localStorage.getItem("token")
     //fetch users data
     const fetchUsersData = async () => {
-        const res = await fetch("http://localhost:5001/userData");
+        const res = await fetch(`http://localhost:8000/accounts/accounts/get/`, { headers: { 'Authorization': `token ${token}` } });
         const data = await res.json();
         return data;
        };
@@ -44,26 +45,26 @@ function RecurringPayments1() {
   
   //fetch users data
   const fetchPaymentsData = async () => {
-      const res = await fetch(" http://localhost:5004/setPayments");
+      const res = await fetch(`http://localhost:8000/payees/payees/get/` ,{ headers: { 'Authorization': `token ${token}` } })
       const data = await res.json();
       return data;
   };
   
 
-  const setUpPayments = async (payData) => {
-    const res = await fetch('http://localhost:5004/setPayments',
-      {
-        method: "POST",
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(payData)
-      });
+  // const setUpPayments = async (payData) => {
+  //   const res = await fetch('http://locahost:8000/payees/payees/add/', setUpPayments,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         'Content-type': 'application/json','Authorization': `token ${token}` 
+  //       },
+  //       body: JSON.stringify(payData)
+  //     });
     
-      const data = await res.json();
-      setPaymentsData([...paymentsData, data]);
+  //     const data = await res.json();
+  //     setPaymentsData([...paymentsData, data]);
     
-  }
+  // }
 
     
   let maxDate = moment().add({ years: .5 });
@@ -83,9 +84,31 @@ function RecurringPayments1() {
       } else {
         
 
-      
-     
-        setUpPayments({ fromAccountNumber: fromAccountNumber, payeeName: payeeName, paymentTitle: paymentTitle, paymentDate: paymentDate, amount: amount, frequency: frequency })
+        const setUpPayments = { account: fromAccountNumber, payeeName: payeeName, nextDueDate: paymentDate, amount: amount, frequency: frequency, payeeAccount: payeeAccount }
+        
+
+        // const res = axios(`http://localhost:8000/payees/payees/add/`,
+        // {
+        //   method: "POST",
+        //   headers: {
+        //     'Content-type': 'application/json',
+        //     'Authorization': `token ${token}`
+        //   },
+        //   body: JSON.stringify(setUpPayments)
+        //   });
+
+        axios.post(`http://localhost:8000/payees/payees/add/`, setUpPayments, { headers: { 'Authorization': `token ${token}` } })
+          .then(res => {
+            console.log(res.data)
+            setPaymentsData([...paymentsData, res.data.payee]);
+          })
+          .catch(err => {
+            })
+            
+        // const data = res.json();
+        // console.log(data)
+        // setPaymentsData([...paymentsData, data]);
+
 
         setFromAccountNumber("")
         setPayeeName("")
@@ -93,6 +116,7 @@ function RecurringPayments1() {
         setPaymentTitle("")
         setPaymentDate("")
         setFrequency("")
+        setPayeeAccount("")
       }
       
       
@@ -109,14 +133,15 @@ function RecurringPayments1() {
 
             
             <form className='transfer' onSubmit={onSubmit}>
-                <div className='form-control'>
-            <label>Payment Title</label>
-            <input
-                type="text"
-                placeholder='Title'
-                value={paymentTitle}
-                onChange={(e) => setPaymentTitle(e.target.value)} style={{border:"none"}} required/>
-              </div>
+            <div className='form-control' style={{ marginTop: -10}}>
+            <label>Payee name</label>
+            <input 
+            type="text"
+            placeholder='Payee name'
+            value = {payeeName}
+          onChange={(e) => setPayeeName(e.target.value)}
+          style={{border:"none"}} required/>
+      </div>
               
                 <div className='form-control' style={{ marginTop: -15}}>
                   <div style={ {display:"inline-block", margin:"10px"}}>
@@ -127,7 +152,7 @@ function RecurringPayments1() {
                       <option > -- select an option -- </option>
                       {usersData.map((user) => (
                         
-                      <option value={user.accountnumber}>{user.accountnumber}</option>
+                      <option value={user.accountNumber}>{user.accountNumber}</option>
                     
                       )
                       )
@@ -136,15 +161,18 @@ function RecurringPayments1() {
       
                 </div>
                 </div>
-                <div className='form-control' style={{ marginTop: -10}}>
-                  <label>Payee name</label>
+                
+            
+            <div className='form-control' style={{ marginTop: -10}}>
+                  <label>Payee Account</label>
                   <input 
-                  type="text"
-                  placeholder='Payee name'
-                  value = {payeeName}
-                onChange={(e) => setPayeeName(e.target.value)}
+                  type="number"
+                  placeholder='Payee account'
+                  value = {payeeAccount}
+                onChange={(e) => setPayeeAccount(e.target.value)}
                 style={{border:"none"}} required/>
               </div>
+
                 <div className='form-control' style={{ marginTop: -10}}>
                   <label>Amount</label>
                   <input
@@ -163,16 +191,16 @@ function RecurringPayments1() {
                   onChange={(e) => setFrequency(e.target.value)}
                   style={{border:"none"}}>
                       <option disabled selected> -- select an option -- </option>
-                      <option value="One Time">One time</option>
-                      <option value="Daily">Daily</option>
+                      <option value="Once">One time</option>
                       <option value="Weekly">Weekly</option>
-                      <option value="Monthly">Monthly</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Yearly">Yearly</option>
                     </select>
       
                 </div>
                 </div>
                 <div className="form-control" style={{ marginTop: -12}}>
-                <label>Start on</label>
+                <label>Next Due Date</label>
                 <input
                   type="date"
                   name="pDate"
@@ -194,7 +222,7 @@ function RecurringPayments1() {
       {paymentsData.length > 0 ? (
         <div className="form-control">
           <br></br>
-          <semantic_header><h1 style={{ marginLeft:"43%"}}>Future Payments</h1></semantic_header>
+          <semantic_header><h1 style={{ marginLeft:"41%"}}>Future Payments</h1></semantic_header>
           <ExistingPayments getPaymentsData={paymentsData} />
           </div>  
       ) : (

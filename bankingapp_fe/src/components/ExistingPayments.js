@@ -1,3 +1,4 @@
+import { FaTimes } from "react-icons/fa";
 
 function ExistingPayments({ getPaymentsData }) {
   return (
@@ -5,9 +6,14 @@ function ExistingPayments({ getPaymentsData }) {
       {getPaymentsData.map((payment) => (
         <div className="task">
         <br></br>
-        <h2 className="h2clr"> Title: {payment.paymentTitle}</h2>
-        <h3 > Payee Name: {payment.payeeName}</h3>
-          <h3> Amount: {payment.amount}</h3>
+          <h2 className="h2clr"> Payee Name: {payment.payeeName} <FaTimes
+          style={{ color: "black", cursor: "pointer"}}
+          
+        /></h2>
+        
+          <h3> Amount: ${ `${payment.amount}`}</h3>
+          <h3> Auto-payment Date: {payment.nextDueDate}</h3>
+         
           <br></br>
         </div>
         ))}

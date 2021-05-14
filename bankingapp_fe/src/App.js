@@ -1,11 +1,3 @@
-import logo from './logo.svg';
-// import './App.css';
-// import React from 'react';
-import SiderDemo from "./components/applayout";
-// import Login from "./components/login";
-// import Admin from "./components/admin";
-// import Customer from "./components/customer";
-// import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import './App.css';
 import React from 'react';

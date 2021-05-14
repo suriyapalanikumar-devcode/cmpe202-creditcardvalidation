@@ -6,7 +6,7 @@ export const COLUMNS = [
 {
     Header: 'Tranaction Date',
     accessor: 'creationDate',
-    Cell: ({value})=>{return format(new Date(value), 'mm/dd/yyyy')}
+    Cell: ({value})=>{return format(new Date(value), 'MM/dd/yyyy')}
   },
   {
     Header: 'Reference Number',

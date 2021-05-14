@@ -19,7 +19,7 @@ const Navbar = () => {
             Set Recurring Payments
           </NavLink>
           <NavLink to="/transactionHistory" activeStyle>
-            Tranaction History
+            Transactions History
           </NavLink>
           
         </NavMenu>
