@@ -1,6 +1,6 @@
 Front end:
 
-1) Design a login Screen - Rohit(12th April)
+1) Design a login Screen 
 
 If Admin, Design:
 APIS - DONE
@@ -14,9 +14,6 @@ If Customer, Design:
 Saurabh - Design
 1) Show options for 
 Transferring between accounts - API Done
-Setting up recurring bill payment - Sajal
+Setting up recurring bill payment 
 view transactions(Credit, debit) with time durations for 18 months 
 2) design pages for the same
-
-
-Backend APIS:
